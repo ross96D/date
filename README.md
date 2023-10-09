@@ -1,1 +1,1 @@
-## Implementacion de fecha que solo tiene en cuenta el dia, el mes y el año.
+Implementacion de fecha que solo tiene en cuenta el dia, el mes y el año.
