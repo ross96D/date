@@ -1,4 +1,6 @@
 
+// ignore_for_file: constant_identifier_names
+
 /// Clase que representa día, mes y año solamente para facilitar el
 /// trabajo con las fechas a traves de la red
 ///
@@ -10,48 +12,46 @@
 /// a la hora de parsear el valor
 class Date implements Comparable<Date> {
 
+  static getyears(int daysrep) {
+    int totalDays;
+    int aprox = (daysrep/365).floor() + 1;
+    do {
+      aprox -= 1;
+      totalDays = daysInYears(aprox);
+    } while (totalDays >= daysrep);
+    return aprox;
+  }
   int? _year;
   int get year {
-    if (_year == null) {
-      int totalDays;
-      int aprox = (_setdays/365).floor() + 1;
-      int leaps;
-      int nonLeaps;
-      do {
-        aprox -= 1;
-        leaps = (aprox/4).floor()  - (aprox/100).floor() + (aprox/400).floor();
-        nonLeaps = aprox - leaps;
-        totalDays = leaps * 366 + nonLeaps * 365;
-      } while (totalDays > _setdays);
-      _year = leaps + nonLeaps;
-    }
+    _year ??= getyears(_setdays);
     return _year!;
   }
 
+  static getMonths(int year, int daysrep) {
+    int days = daysInYears(year);
+    days = daysrep - days;
+    int n = 0;
+    while (days > 0) {
+      int dd =_Months.values[n].days(); 
+      days -= dd;
+      // leap year
+      if (n == 1 && isLeap(year)) {
+        days --;
+      }
+      n++;
+    }
+    return n;
+  }
   int? _month;
   int get month {
-    if (_month == null) {
-      int days = _daysInYears(year);
-      days = _setdays - days;
-      int n = 0;
-      while (days > 0) {
-        int dd =_Months.values[n].days(); 
-        days -= dd;
-        // leap year
-        if (n == 1 && isLeap(year)) {
-          days --;
-        }
-        n++;
-      }
-      _month = n;
-    }
+    _month ??= getMonths(year, _setdays);
     return _month!;
   }
 
   int? _day;
   int get day {
     if (_day == null) {
-      int days = _daysInYears(year);
+      int days = daysInYears(year);
       days = _setdays - days;
       days = days - _daysInMonth(year, month);
       _day = days;
@@ -69,8 +69,12 @@ class Date implements Comparable<Date> {
     _daysRep = days;
   }
 
-  static int _daysInYears(int year) {
-    return 365 * year + (year/4).floor() - (year/100).floor() + (year/400).floor();
+  static int daysInYears(int year) {
+    return 365 * year + leapYears(year - 1);
+  }
+  
+  static int leapYears(int year) {
+    return (year/4).floor() - (year/100).floor() + (year/400).floor();
   }
 
   static int _daysInMonth(int year, int month) {
@@ -93,15 +97,17 @@ class Date implements Comparable<Date> {
     int day = 1,
   ]) {
     month = month - 1;
-    year += ((month)/ 12).floor();
-    month = month - ((month)/ 12).floor() * 12;
-    _setdays = _daysInYears(year);
+    int addedYears = ((month)/ 12).floor(); 
+    year += addedYears;
+    month = month - (addedYears * 12);
+    _setdays = daysInYears(year);
     
+    if (month > 1 && isLeap(year)) {
+      _setdays++;
+    }
+
     for (int i = 0; i < month; i++) {
       _setdays += _Months.values[i].days();
-      if (i == 1 && isLeap(year)) {
-        _setdays += 1;
-      }
     }
 
     _setdays += day;

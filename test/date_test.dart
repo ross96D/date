@@ -33,7 +33,7 @@ void main() {
 
   group("date string consistency", () {
     test("date to string", () {
-      for (int i = 0; i < 5000; i++) {
+      for (int i = 0; i < 10000; i++) {
         int year = Random.secure().nextInt(10000);
         int month = Random.secure().nextInt(12);
         int day = Random.secure().nextInt(28);
@@ -68,5 +68,44 @@ void main() {
     var now2 = Date.now();
 
     expect (now2, Date.from(now));
+  });
+
+  test("bug on december 31", () {
+    final d = DateTime(2020, 12, 31);
+    Date date = Date.from(d);
+
+    expect(date.toString(), "2020-12-31");
+  });
+
+  test('alalaa', () {
+    final d = DateTime(7112, 2, 21);
+    var date = Date.from(d);
+
+    expect(date.toString(), "7112-02-21");
+  });
+
+  test("bug on january 1", () {
+    final d = DateTime(2020, 1, 1);
+    Date date = Date.from(d);
+
+    print(date);
+    expect(date.toString(), "2020-01-01");
+  });
+
+  test("days in year", () {
+    // 0 no es considerado leap year.. tal vez sí deberia pero por ahora se queda así
+
+    int days = Date.daysInYears(1);
+    expect(days, equals(365));
+
+    days = Date.daysInYears(3);
+    expect(days, equals(365 * 3));
+
+    // en el inicio del 4rto año aun no pasa el 29 de febrero por lo q no se adiciona 1 
+    days = Date.daysInYears(4);
+    expect(days, equals(365 * 4));
+
+    days = Date.daysInYears(5);
+    expect(days, equals(365 * 5 + 1));
   });
 }
