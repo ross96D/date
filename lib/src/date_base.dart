@@ -135,6 +135,18 @@ class Date implements Comparable<Date> {
     _setdays = rep;
   }
 
+  Date copyWith({
+    int? year,
+    int? month,
+    int? day,
+  }) {
+    return Date(
+      year ?? this.year,
+      month ?? this.month,
+      day ?? this.day,
+    );
+  }
+
   /// retorna un [int] pq debe ser llamada dentro de un json, no para que devuelva un json
   /// 
   /// se nombra como toJson es para seguir el formato que se ha usado
@@ -165,6 +177,14 @@ class Date implements Comparable<Date> {
   static Date now() {
     var now = DateTime.now();
     return Date(now.year, now.month, now.day);
+  }
+
+  static Date min(Date a, Date b) {
+    return a>b ? b : a;
+  }
+
+  static Date max(Date a, Date b) {
+    return a<b ? b : a;
   }
 
   /// de la misma forma que [toJson] devuelve un [int], fromJson recive un [int]
