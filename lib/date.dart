@@ -3,6 +3,5 @@
 /// More dartdocs go here.
 library;
 
-export 'src/date_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
+export 'src/date.dart';
+export 'src/datetime_utils.dart';

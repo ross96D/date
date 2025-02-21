@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:date/date.dart';
+import 'package:date/src/date_utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -95,17 +96,17 @@ void main() {
   test("days in year", () {
     // 0 no es considerado leap year.. tal vez sí deberia pero por ahora se queda así
 
-    int days = Date.daysInYears(1);
+    int days = daysInYears(1);
     expect(days, equals(365));
 
-    days = Date.daysInYears(3);
+    days = daysInYears(3);
     expect(days, equals(365 * 3));
 
     // en el inicio del 4rto año aun no pasa el 29 de febrero por lo q no se adiciona 1 
-    days = Date.daysInYears(4);
+    days = daysInYears(4);
     expect(days, equals(365 * 4));
 
-    days = Date.daysInYears(5);
+    days = daysInYears(5);
     expect(days, equals(365 * 5 + 1));
   });
 }
