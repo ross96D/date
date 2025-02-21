@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 void main() {
   test('date tojson formJson consistency', () {
     var d1 = Date(2023, 1, 3);
-    var d2 = Date.fromJson(Date.toJson(d1));
+    var d2 = Date.fromJson(d1.toJson());
 
     expect (d1, d2);
     expect (d1.day, d2.day);

@@ -1,6 +1,3 @@
-
-// ignore_for_file: constant_identifier_names
-
 import 'package:date/src/date_utils.dart';
 
 /// Clase que representa día, mes y año solamente para facilitar el
@@ -100,22 +97,22 @@ class Date implements DateTime {
   /// retorna un [int] pq debe ser llamada dentro de un json, no para que devuelva un json
   /// 
   /// se nombra como toJson es para seguir el formato que se ha usado
-  static int toJson(Date d) {
+  static int toJsonExternal(Date d) {
     return d._setdays;
   }
-
-  static int? toJsonNullable(Date? d) {
-    return d != null ? toJson(d) : null;
+  static int? toJsonExternalNullable(Date? d) {
+    return d != null ? toJsonExternal(d) : null;
   }
+  int toJson() => toJsonExternal(this);
 
   /// de la misma forma que [toJson] devuelve un [int], fromJson recibe un [int]
-  static Date fromJson(int json) {
+  static Date fromJsonExternal(int json) {
     return Date._fromRepresentation(json);
   }
-
-  static Date? fromJsonNullable(int? json) {
-    return json != null ? fromJson(json) : null;
+  static Date? fromJsonExternalNullable(int? json) {
+    return json != null ? fromJsonExternal(json) : null;
   }
+  factory Date.fromJson(dynamic json) => fromJsonExternal(json);
 
   static Date min(Date a, Date b) {
     return a>b ? b : a;
