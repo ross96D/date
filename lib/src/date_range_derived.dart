@@ -57,9 +57,17 @@ class DerivedRange<T extends DateTime> extends BaseRange<T> {
   int get hashCode => Object.hashAll([customName, originalDateRange]);
 
   @override
-  T getFrom() => transform(originalDateRange.getFrom());
+  T? getFrom() {
+    final from = originalDateRange.getFrom();
+    if (from==null) return null;
+    return transform(from);
+  }
 
   @override
-  T getTo() => transform(originalDateRange.getTo());
+  T? getTo() {
+    final to = originalDateRange.getTo();
+    if (to==null) return null;
+    return transform(to);
+  }
 
 }
