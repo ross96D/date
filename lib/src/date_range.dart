@@ -134,9 +134,9 @@ class BaseRange<T extends DateTime> implements Comparable<Object?> {
 
   T? getTo() => _to;
 
-  Object getSqlFrom() => getFrom()?.sql;
-  Object getSqlTo() => getTo()?.sql;
-  Object getSqlToSearch() {
+  Object? getSqlFrom() => getFrom()?.sql;
+  Object? getSqlTo() => getTo()?.sql;
+  Object? getSqlToSearch() {
     var to = getTo();
     if (to!=null && to is Date) { // we need to add 1 day so everything inside the date itself is included in sql search, otherwise it isn't
       to = to.copyWith(day: to.day + 1) as T;
