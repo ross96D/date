@@ -92,7 +92,7 @@ class BaseRange<T extends DateTime> implements Comparable<Object?> {
     return from!=null && to!=null && from.isAtSameDayAs(to);
   }
   String toUIString({bool useCustom=true}){
-    if (useCustom && customName!.isNotNullOrEmpty) {
+    if (useCustom && customName.isNotNullOrEmpty) {
       return customName!;
     }
     final from = getFrom();
@@ -147,6 +147,13 @@ class BaseRange<T extends DateTime> implements Comparable<Object?> {
   @override
   String toString() {
     return toUIString(useCustom: false);
+  }
+
+  DateRange toDateRange() {
+    if (this is DateRange) return (this as DateRange);
+    return DateRange(getFrom()?.toDate(), getTo()?.toDate(),
+      customName: customName,
+    );
   }
 
   bool isInThisRange(DateTime date) {
