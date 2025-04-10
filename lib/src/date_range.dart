@@ -92,7 +92,7 @@ class BaseRange<T extends DateTime> implements Comparable<Object?> {
     return from!=null && to!=null && from.isAtSameDayAs(to);
   }
   String toUIString({bool useCustom=true}){
-    if (useCustom && customName.isNotNullOrEmpty) {
+    if (useCustom && customName.isNotNullOrBlank) {
       return customName!;
     }
     final from = getFrom();
@@ -109,18 +109,14 @@ class BaseRange<T extends DateTime> implements Comparable<Object?> {
     if (from.isAtSameDayAs(to)) {
       return fullFormatUi.format(from);
     }
-    if (from.year==to.year) {
-      if (from.day==1 && to.day==to.lastDayOfMonth.day) {
-        if (from.month==to.month) {
-          return monthFormat.format(from).capitalize();
-        }
-        if (from.month==1 && to.month==12) {
-          return yearFormat.format(from);
-        }
+    if (from.year==to.year && from.day==1 && to.day==to.lastDayOfMonth.day) {
+      if (from.month==to.month) {
+        return monthFormat.format(from).capitalize();
       }
-      if (from.month != to.month) {
-        return "${onlyMonthFormat.format(from)} - ${onlyMonthFormat.format(to)} ${from.year}";
+      if (from.month==1 && to.month==12) {
+        return yearFormat.format(from);
       }
+      return "${onlyMonthFormat.format(from)} - ${onlyMonthFormat.format(to)} ${from.year}";
     }
     String fromString = (from.month!=to.month || from.year!=to.year) && from.day==1
         ? condensedMonthFormat.format(from) : condensedFormat.format(from);
@@ -128,9 +124,25 @@ class BaseRange<T extends DateTime> implements Comparable<Object?> {
         ? condensedMonthFormat.format(to) : condensedFormat.format(to);
     return "$fromString - $toString";
   }
+  String toUIStringExact({bool useCustom=true}){
+    if (useCustom && customName.isNotNullOrBlank) {
+      return customName!;
+    }
+    final from = getFrom();
+    final to = getTo();
+    if (from==null && to==null) {
+      return '';
+    }
+    if (from==null) {
+      return condensedFormat.format(to!);
+    }
+    if (to==null) {
+      return condensedFormat.format(from);
+    }
+    return "${condensedFormat.format(from)} - ${condensedFormat.format(to)}";
+  }
 
   T? getFrom() => _from;
-
 
   T? getTo() => _to;
 
