@@ -1,27 +1,21 @@
 import 'package:date/src/date_range.dart';
 import 'package:date/date.dart';
 
-typedef DerivedDateRange = DerivedRange<Date>;
-typedef DerivedDateTimeRange = DerivedRange<DateTime>;
-
 typedef DerivedDateTransform<T extends DateTime> = T Function(T original);
 
 class DerivedRange<T extends DateTime> extends BaseRange<T> {
-
   final BaseRange<T> originalDateRange;
   final DerivedDateTransform<T> transform;
 
-  static T defaultTransform<T extends DateTime>(T originalDateRange) {
-    return originalDateRange.copyWith(year: originalDateRange.year-1) as T;
+  static DateTime defaultTransform(DateTime originalDate) {
+    return originalDate.copyWith(year: originalDate.year - 1);
   }
 
-  DerivedRange(this.originalDateRange, {
-    DerivedDateTransform<T>? transform,
-    String? customName,
-  })  : transform = transform ?? defaultTransform,
-        super(originalDateRange.getFrom(), originalDateRange.getTo(),
-          customName: customName,
-        );
+  DerivedRange(
+    this.originalDateRange, {
+    required this.transform,
+    super.customName,
+  }) : super(originalDateRange.getFrom(), originalDateRange.getTo());
 
   @override
   DerivedRange<T> copyWith({
@@ -31,7 +25,7 @@ class DerivedRange<T extends DateTime> extends BaseRange<T> {
     // these arguments don't make sense here, but i'm forced to add them because of inheritance
     T? from,
     T? to,
-  }){
+  }) {
     return DerivedRange<T>(
       comparedDateRange ?? this.originalDateRange,
       transform: transform ?? this.transform,
@@ -42,13 +36,13 @@ class DerivedRange<T extends DateTime> extends BaseRange<T> {
   @override
   bool operator ==(Object other) {
     if (other is DerivedRange) {
-      return customName==other.customName
-          && originalDateRange==other.originalDateRange;
+      return customName == other.customName &&
+          originalDateRange == other.originalDateRange;
     }
     if (other is BaseRange) {
-      return customName==other.customName
-          && getFrom()==other.getFrom()
-          && getTo()==other.getTo();
+      return customName == other.customName &&
+          getFrom() == other.getFrom() &&
+          getTo() == other.getTo();
     }
     return false;
   }
@@ -59,15 +53,38 @@ class DerivedRange<T extends DateTime> extends BaseRange<T> {
   @override
   T? getFrom() {
     final from = originalDateRange.getFrom();
-    if (from==null) return null;
+    if (from == null) return null;
     return transform(from);
   }
 
   @override
   T? getTo() {
     final to = originalDateRange.getTo();
-    if (to==null) return null;
+    if (to == null) return null;
     return transform(to);
   }
+}
 
+class DerivedDateRange extends DerivedRange<Date> {
+  DerivedDateRange(
+    super.originalDateRange, {
+    super.transform = defaultTransform,
+    super.customName,
+  });
+
+  static Date defaultTransform(Date originalDate) {
+    return originalDate.copyWith(year: originalDate.year - 1);
+  }
+}
+
+class DerivedDateTimeRange extends DerivedRange<DateTime> {
+  DerivedDateTimeRange(
+    super.originalDateRange, {
+    super.transform = defaultTransform,
+    super.customName,
+  });
+
+  static DateTime defaultTransform(DateTime originalDate) {
+    return originalDate.copyWith(year: originalDate.year - 1);
+  }
 }
